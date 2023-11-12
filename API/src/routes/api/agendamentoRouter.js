@@ -1,0 +1,116 @@
+const express = require('express');
+const router = express.Router();
+const Agendamento = require('../../../models/Agendamento');
+const { conectarMongo, desconectarMongo } = require('../../../dataBase/mongodb');
+const verificarToken = require('../middlewares/v_token');
+const { format } = require('date-fns');
+const ptBR = require('date-fns/locale/pt-BR');
+
+const io = require('socket.io')();
+
+
+router.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+router.post('/agendamentos', verificarToken, async (req, res) => {
+  try {
+    const { id_sala, hora_entrada, hora_saida, data_do_agendamento } = req.body;
+
+    // Verifica se a sala existe
+    if (id_sala > 5) {
+      return res.status(400).json({ error: 'Essa sala não existe' });
+    }
+
+    await conectarMongo();
+
+    const agendamentoExistente = await Agendamento.findOne({
+      id_sala,
+      data_do_agendamento,
+      $or: [
+        {
+          hora_entrada: { $lt: hora_saida },
+          hora_saida: { $gt: hora_entrada }
+        }
+      ]
+    });
+
+    if (agendamentoExistente) {
+      desconectarMongo();
+      return res.status(400).json({ error: 'Conflito de horário com outro agendamento' });
+    }
+
+    // Se o horário estiver disponível, crie o novo agendamento
+    const novoAgendamento = new Agendamento(req.body);
+    const agendamentoSalvo = await novoAgendamento.save();
+
+    // Emitir evento para todos os clientes quando um novo agendamento for criado
+    req.io.emit('newAgendamento', agendamentoSalvo);
+
+    desconectarMongo(); // Desconecta do MongoDB
+
+    return res.status(201).json(agendamentoSalvo);
+  } catch (error) {
+    res.status(400).json({ error: 'Erro ao criar o agendamento' });
+  }
+});
+
+router.get('/agendamentos', async (req, res) => {
+  try {
+    await conectarMongo();
+    const agendamentos = await Agendamento.find();
+    res.status(200).json(agendamentos);
+     req.io.emit('newAgendamento', agendamentos);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar os agendamentos' });
+  }
+});
+
+router.get('/agendamentos/id-agendamento=:id', async (req, res) => {
+  try {
+    await conectarMongo();
+    const agendamento = await Agendamento.findById(req.params.id);
+    if (!agendamento) {
+      res.status(404).json({ error: 'Agendamento não encontrado' });
+    } else {
+      res.status(200).json(agendamento);
+    }
+    desconectarMongo();
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao buscar o agendamento' });
+  }
+});
+
+// Rota para atualizar um agendamento por ID
+router.put('/agendamentos/:id', async (req, res) => {
+  try {
+    await conectarMongo();
+    const agendamento = await Agendamento.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!agendamento) {
+      res.status(404).json({ error: 'Agendamento não encontrado' });
+    } else {
+      res.status(200).json(agendamento);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar o agendamento' });
+  }
+});
+
+// Rota para excluir um agendamento por ID
+router.delete('/agendamentos/:id', async (req, res) => {
+  try {
+    await conectarMongo();
+    const agendamento = await Agendamento.findByIdAndRemove(req.params.id);
+    if (!agendamento) {
+      res.status(404).json({ error: 'Agendamento não encontrado' });
+    } else {
+      res.status(204).send();
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao excluir o agendamento' });
+  }
+});
+
+module.exports = router;
+

@@ -8,8 +8,8 @@ aceitar/solicitaçao
 }
 
 a criar {
-buscar agendamente do user (meus agendamentos)
-buscar agendamentos do dia (pagina pricinpal)
+buscar agendamente somente do prof// remover tbm
+buscar agendamentos // remove admin
 recusar solicitaçao
 
 }
@@ -17,3 +17,6 @@ recusar solicitaçao
 a aprimorar{
 cadastro de agendamento( manipulaçao de datas )
 }
+
+
+lembrar de conectar o login no banco certo

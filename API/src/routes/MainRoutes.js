@@ -4,6 +4,9 @@ const login = require('./api/loginRoutes.js')
 const registrar = require('./api/registrarRouter.js')
 const agendamento = require('./api/agendamentoRouter.js')
 const solicitacao = require('./api/solicitacaoRouter.js')
+// const dotenv = require('dotenv');
+
+// Carregue as variáveis de ambiente do arquivo
 const router = express.Router();
 router.use(cors());
 

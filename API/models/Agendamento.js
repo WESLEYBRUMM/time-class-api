@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
 const agendamentoSchema = new mongoose.Schema({
-  _id: Number, // Campo _id configurado como Number
   nome_do_professor: {
+    type: String,
+    required: true,
+  },
+  id_prof: {
     type: String,
     required: true,
   },
@@ -15,8 +18,8 @@ const agendamentoSchema = new mongoose.Schema({
     required: true,
   },
   data_do_agendamento: {
-    type: String,
-    required:true,
+    type: Date,
+    required: true,
   },
   hora_entrada: {
     type: String,
@@ -26,17 +29,6 @@ const agendamentoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
-
-
-agendamentoSchema.pre('save', async function (next) {
-  if (!this.isNew) {
-    return next();
-  }
-
-  const count = await mongoose.model('Agendamento').countDocuments();
-  this._id = count + 1;
-  next();
 });
 
 module.exports = mongoose.model('Agendamento', agendamentoSchema);

@@ -2,10 +2,9 @@ const mongoose = require('mongoose');
 
 // Defina o esquema do usuário
 const userSchema = new mongoose.Schema({
-  nomeUser: {
+  email: {
     type: String,
     required: true,
-    unique: true,
   },
   senha: {
     type: String,

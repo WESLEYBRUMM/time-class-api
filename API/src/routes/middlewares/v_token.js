@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
-const jwtSecret = 'wesley-brum'; // Substitua pela sua chave secreta real
+const jwtSecret = process.env.CHAVEUSER; // Substitua pela sua chave secreta real
 
 // Middleware para verificar tokens
 const verificarToken = (req, res, next) => {
   // Obtenha o token do cabeçalho da solicitação
   const token = req.header('Authorization');
-console.log(token)
+
   // Verifique se o token está presente
   if (!token) {
     return res.status(401).json({ error: 'Token de autenticação não fornecido' });

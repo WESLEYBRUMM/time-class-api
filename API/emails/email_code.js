@@ -5,8 +5,8 @@ const cache = require('memory-cache');
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   auth: {
-    user: 'wesley.brum@aluno.edu.es.gov.br', // Insira seu email e senha do Gmail aqui
-    pass: 'wesleybrum546010',
+    user: process.env.AUTH_GMAIL_USER, // Insira seu email e senha do Gmail aqui
+    pass: process.env.AUTH_GMAIL_PASS,
   }
 });
 
@@ -15,7 +15,7 @@ const email_code = (req, res, email) => {
   cache.put(email, code, 300000);
 
   const mailOptions = {
-    from: 'wesleybrum12345@gmail.com',
+    from: process.env.AUTH_GMAIL_FROM,
     to: email,
     subject: 'Código de Autenticação de Duas Etapas',
     html: `<!DOCTYPE html>

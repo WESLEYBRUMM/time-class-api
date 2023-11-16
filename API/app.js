@@ -2,32 +2,41 @@ const express = require('express');
 const MainRoutes = require('./src/routes/MainRoutes.js');
 const rateLimit = require('express-rate-limit');
 const requestIp = require('request-ip');
+const bodyParser = require('body-parser');
 const cors = require('cors');
+// const dotenv = require('dotenv');
 
-// const urlProxy = "https://api-agendamendo-jb.wesleybrum.repl.co";
+// // Carregue as variáveis de ambiente do arquivo .env
+// dotenv.config();
+
 const app = express();
-app.use(cors())
-app.set('trust proxy', 1)
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); 
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
+// Middleware de tratamento de erro
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(HTTP_STATUS.SERVER_ERROR).json({ error: 'Erro interno do servidor' });
 });
+
+app.set('trust proxy', 1);
+
+// Use o middleware body-parser para analisar dados JSON
+app.use(bodyParser.json());
+
+// Use o middleware cors para lidar com requisições de diferentes origens
+app.use(cors());
 
 // Crie um middleware personalizado para extrair o endereço IP real do cabeçalho personalizado
 app.use(requestIp.mw());
 
-// Configure o middleware de limitação de taxa
+// Middleware de limitação de taxa
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // Janela de tempo de 15 minutos
-  max: 10000000, // Limite de 10 requisições por IP durante a janela de tempo
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100,
 });
 
-app.use(MainRoutes);
-
-// Certifique-se de que o middleware de limitação de taxa seja aplicado após o middleware de extração do IP real
 app.use(limiter);
 
-// Exporte o aplicativo
+// Use as rotas principais
+app.use(MainRoutes);
+
 module.exports = app;

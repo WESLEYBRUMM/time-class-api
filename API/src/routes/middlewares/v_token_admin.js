@@ -1,23 +1,26 @@
 const jwt = require('jsonwebtoken');
-const jwtTokenAdmin = 'wesley-brum-admin'; 
+const jwtTokenAdmin = process.env.CHAVEADMIN; 
 
 
-const verificarToken = (req, res, next) => {
-  // Obtenha o token do cabeçalho da solicitação
+const verificarTokenAdmin = (req, res, next) => {
+
   const token = req.header('Authorization');
-console.log(token)
-  // Verifique se o token está presente
+
   if (!token) {
     return res.status(401).json({ error: 'Token de autenticação não fornecido' });
   }
 
   try {
-  
-    const decoded = jwt.verify(token, jwtTokenAdmin);
+    if (decoded.role !== 'admin') {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ error: 'Acesso não autorizado' });
+    }
+
+    // Se o usuário for um admin, continue para a próxima rota
+    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({ error: 'Token inválido' });
   }
 };
 
-module.exports = verificarToken;
+module.exports = verificarTokenAdmin;

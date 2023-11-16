@@ -31,6 +31,6 @@
     "speakeasy": "^2.0.0"
   },
   "scripts": {
-    "start": "nodemon API/server.js"
+    "start": "node API/server.js"
   }
 }

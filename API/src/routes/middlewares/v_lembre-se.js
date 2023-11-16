@@ -1,8 +1,8 @@
 //atualizar para verificar admin tbm
 
 const jwt = require('jsonwebtoken');
-const CHAVEUSER = 'wesley-brum';
-const CHAVEADMIN = 'wesley-brum-admin'
+const CHAVEUSER = process.env.CHAVEUSER;
+const CHAVEADMIN = process.env.CHAVEADMIN;
 const verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
   const { email, userId } = req.body;

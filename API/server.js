@@ -14,8 +14,6 @@ if (cluster.isMaster) {
   const app = require('./app');
   const PORT = 3000;
   require('dotenv').config();
-
-  console.log(process.env.MONGODB_URI);
   app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT} - Worker ${process.pid}`);
   });

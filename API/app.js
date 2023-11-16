@@ -1,5 +1,5 @@
 const express = require('express');
-const MainRoutes = require('./src/routes/MainRoutes.cjs');
+const MainRoutes = require('./src/routes/MainRoutes.js');
 const rateLimit = require('express-rate-limit');
 const requestIp = require('request-ip');
 const bodyParser = require('body-parser');

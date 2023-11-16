@@ -31,6 +31,11 @@
     "speakeasy": "^2.0.0"
   },
   "scripts": {
-    "start": "node API/server.js"
+    "start": "babel-node seu-arquivo.js"
+  },
+
+  "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3"
   }
 }

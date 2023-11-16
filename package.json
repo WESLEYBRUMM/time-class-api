@@ -2,7 +2,6 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-    "cluster": "^0.7.7",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
@@ -11,10 +10,14 @@
     "jsonwebtoken": "^9.0.2",
     "memory-cache": "^0.2.0",
     "mongoose": "^8.0.1",
-    "node": "^21.1.0",
     "nodemailer": "^6.9.7",
     "rand-token": "^1.0.1",
     "request-ip": "^3.3.0",
     "speakeasy": "^2.0.0"
+  },
+  "scripts": {
+    "start": "node API/server.js"
   }
 }
+
+

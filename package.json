@@ -31,7 +31,7 @@
     "speakeasy": "^2.0.0"
   },
   "scripts": {
-    "start": "npx babel-node API/server.js"
+    "start": "npx babel-node API/server.cjs"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.0",
